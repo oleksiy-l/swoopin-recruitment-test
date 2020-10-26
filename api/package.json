@@ -50,6 +50,7 @@
     "@turf/nearest-point-to-line": "^6.0.0",
     "@turf/point-to-line-distance": "^6.0.0",
     "@turf/turf": "^5.1.6",
+    "@types/fastify-jwt": "^0.8.1",
     "@types/mapbox__polyline": "^1.0.1",
     "aes256": "^1.0.4",
     "detect-format": "^1.0.0",

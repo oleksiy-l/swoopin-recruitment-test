@@ -7,15 +7,16 @@ import FastifyAuth from 'fastify-auth'
 import FastifyJWT from 'fastify-jwt'
 import Logger, { ILogger } from '@harmonyjs/logger'
 
-import AuthenticationService from 'services/authentication'
-import EncryptionService from 'services/encryption'
-import VehicleService from 'services/vehicle'
+import AuthenticationService from 'core/services/authentication'
+import EncryptionService from 'core/services/encryption'
+import VehicleService from 'core/services/vehicle'
 
 import ReadinessRoute from 'routes/readiness'
 import GeneralStatusRoute from 'routes/general/status'
 import GeneralVersionRoute from 'routes/general/version'
 
 import LoginRoute from 'routes/login'
+import { GetVehiclesRoute, ModifyVehicleParameterRoute }from 'routes/vehicles'
 
 async function loadLogger() {
     return Logger({
@@ -67,13 +68,15 @@ async function launchServer(conf : any, logger : ILogger) {
 
     // Endpoints
     server.register(LoginRoute)
+    server.register(GetVehiclesRoute)
+    server.register(ModifyVehicleParameterRoute)
 
     // Add conf
     server.decorateRequest('conf', conf)
 
     // Authenticate methods
     server.decorate('authenticateAccount',
-        (req: any, res: any, done: () => void) => AuthenticationService.authenticateAccount({ req, res, done }))
+        (req: any, res: any, done: () => void) => AuthenticationService.authenticateAccount(req, res))
 
     await server.listen(conf.server.port, conf.server.host)
     logger.info(`Server ready at ${conf.server.host}:${conf.server.port}`)

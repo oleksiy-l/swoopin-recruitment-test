@@ -75,6 +75,82 @@ function VehicleService() {
             })
         },
 
+        getCensoredVehicles() {
+            const vehiclesData = this.vehicles
+            console.dir({vehiclesData})
+            const censoredVehicleData: any = []
+            this.vehicles.forEach(vehicle => {
+                const {
+                    polyline,
+                    defaultSpeed,
+                    defaultTemperature,
+                    line,
+                    distance,
+                    ...vehicleData
+                } = vehicle
+                censoredVehicleData.push({...vehicleData})
+            })
+            
+            return censoredVehicleData
+        },
+
+        modifyVehicleParam(id: string, parameter: string, value: string | number) {
+            switch (parameter) {
+                case 'status':
+                    this.changeVehicleStatus(id, parameter) 
+                    break;
+                case 'plate':
+                    this.setVehicleParam(id, parameter, value) 
+                    break;
+                case 'temperature':
+                    this.setVehicleParam(id, parameter, value) 
+                    break;
+                case 'speed':
+                    this.setVehicleParam(id, parameter, value) 
+                    break;
+            
+                default:
+                    return true
+                    break;
+            }
+        },
+
+        setVehicleParam(id: string, param: string, value: string | number) {
+            let paramModifiyingStatus = false
+            this.vehicles.map(( v, i ) => {
+                if ( v.id === id ) {
+                    this.vehicles[i][param] = value
+                    paramModifiyingStatus = true
+                    return
+            }
+            return paramModifiyingStatus
+        })
+        },
+
+        changeVehicleStatus(id: string, status: string) {
+            let statusChanged, vehicleStatus = false
+            switch (status) {
+                case 'offline':
+                    vehicleStatus = false
+                    break;
+                case 'online':
+                    vehicleStatus = true
+                    break;
+                default:
+                    vehicleStatus = false
+                    break;
+            }
+            this.vehicles.map(( v, i ) => {
+                if ( v.id === id ) {
+                    this.vehicles[i].online = vehicleStatus
+                    statusChanged = true
+                    return
+            }
+        })
+
+            return statusChanged ? true : false
+        },
+
         getDrivers() : any[] {
             return this.vehicles
         },

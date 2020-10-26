@@ -11,28 +11,33 @@ function AuthenticationService() {
             this.account = account
         },
 
-        async authenticateAccount(args: {req: any, res: any, done: (error?: Error) => void }) {
+        async verify(res: any, token: string): Promise<any> {
+            // res.verify
+        },
 
+        async authenticateAccount(req: any, res: any) {
             try {
                 // Decode JSON
-                const decoded = await args.req.jwtVerify()
+                const decoded = await req.jwtVerify()
+                console.dir({decoded})
 
                 if (decoded?.payload?.userId) {
 
                     // Verify account is present
                     if ((!this.account) || (decoded.payload.userId === this.account!.id)) {
                         const user = this.account
-                        return Object.assign(args.req, { user })
+                        return Object.assign(req, { user })
                     }
                 }
 
                 // Error
-                return args.res.code(500).send({
+                return res.code(500).send({
                     statusCode: 500,
                     error: 'Internal Server Error',
                 })
-            } catch (e) {
-                return args.res.code(401).send({
+            } catch (e) {                
+                console.log(e)
+                return res.code(401).send({
                     statusCode: 401,
                     error: 'Credentials invalid',
                     message: e.message,
