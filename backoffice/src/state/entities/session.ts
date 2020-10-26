@@ -60,10 +60,13 @@ export default class StateSession {
 
         // @ts-ignore
         this.token = token
+
+        if (this.api)
+            this.api.defaults.headers.common.Authorization = `Bearer ${token}`;
     }
 
     @action.bound async connect({ login, password } : { login: string, password: string}) {
-        // FIXME
+        return this.api && this.api.post('login', { login, password });
     }
 
     @observable locale = null
